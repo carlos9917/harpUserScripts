@@ -25,8 +25,8 @@ CONFIG <- yaml.load_file(here(config_file))
 start_date <- CONFIG$pre$start_date
 end_date <- CONFIG$pre$end_date
 fclen <- CONFIG$pre$fclen
-vfld_path <- CONFIG$pre$vfld_path
-file_template <- CONFIG$pre$vfld_template
+grb_path <- CONFIG$pre$grb_path
+file_template <- CONFIG$pre$grb_template
 fcst_path <- CONFIG$verif$fcst_path
 fcst_model <- CONFIG$verif$fcst_model
 params <- CONFIG$pre$params
@@ -45,6 +45,7 @@ for (param in params)
       lead_time = lead_time,
       file_path = vfld_path,
       file_template = file_template,
+      file_format = "grb",
       output_file_opts =  sqlite_opts(path = fcst_path),
       return_data = TRUE
     )
