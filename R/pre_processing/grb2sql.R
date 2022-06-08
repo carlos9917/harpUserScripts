@@ -48,7 +48,7 @@ for (param in params)
       fcst_model     = fcst_model,
       parameter = param,
       lead_time = lead_time,
-      file_path = vfld_path,
+      file_path = grb_path,
       file_template = file_template,
       file_format = "grb",
       transformation = "interpolate",
