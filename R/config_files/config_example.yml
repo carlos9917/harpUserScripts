@@ -7,7 +7,8 @@ pre:
   vfld_path: "/scratch/ms/ie/duuw/vfld_vobs_sample/vfld"
   vobs_path: "/scratch/ms/dk/nhd/vfld_vobs_sample/vobs"
   grb_path: "/scratch/kmw/HARP_WW/GRB_INPUT"
-  grb_file: "{YYYY}{MM}{DD}{HH}/ECMWF_DET_{YYYY}{MM}{DD}.grb"
+  grb_template: "{YYYY}{MM}{DD}{HH}/ECMWF_DET_{YYYY}{MM}{DD}.grb"
+  grb_orog: "/scratch/kmw/HARP_WW/GRB_INPUT/ECMWF/ECMWF_OROGRAPHY"
   vfld_template:  #include one for each model if they are different. 
     - "vfld"
   stat_list: "/home/kmw/harp_ww/harpUserScripts/R/include/statlist.csv"
@@ -20,7 +21,7 @@ pre:
 verif:
   by_step: "12h"
   fcst_model:
-    - EC9
+    - ECMWF_DET
   lead_time: seq(0, 24, 1)
   fcst_type: "det" #det or eps
   grps: "leadtime"

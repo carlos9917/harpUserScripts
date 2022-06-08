@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-# Read vfld data and save it in sqlite format
+# Read grib-files, interpolate to stations  and save it in sqlite format
 library(harp)
 library(argparse)
 library(here)
@@ -27,12 +27,15 @@ end_date <- CONFIG$pre$end_date
 fclen <- CONFIG$pre$fclen
 grb_path <- CONFIG$pre$grb_path
 file_template <- CONFIG$pre$grb_template
+orog_file <- CONFIG$pre$grb_orog
 fcst_path <- CONFIG$verif$fcst_path
 fcst_model <- CONFIG$verif$fcst_model
+station_list <- CONFIG$pre$fcst_model
 params <- CONFIG$pre$params
 lead_time_str <- CONFIG$verif$lead_time
 lead_time  <- eval(parse(text = lead_time_str))
 
+statlist <- read.csv(file=station_list, sep=",")
 
 for (param in params)
 {
@@ -46,6 +49,8 @@ for (param in params)
       file_path = vfld_path,
       file_template = file_template,
       file_format = "grb",
+      transformation = "interpolate",
+      transformation_opts = interpolate_opts(method="bilinear", clim_file = orog_file, stations = statlist), 
       output_file_opts =  sqlite_opts(path = fcst_path),
       return_data = TRUE
     )
