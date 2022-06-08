@@ -30,11 +30,13 @@ file_template <- CONFIG$pre$grb_template
 orog_file <- CONFIG$pre$grb_orog
 fcst_path <- CONFIG$verif$fcst_path
 fcst_model <- CONFIG$verif$fcst_model
-station_list <- CONFIG$pre$fcst_model
+station_list <- CONFIG$pre$stat_list
 params <- CONFIG$pre$params
 lead_time_str <- CONFIG$verif$lead_time
 lead_time  <- eval(parse(text = lead_time_str))
 
+
+print(station_list)
 statlist <- read.csv(file=station_list, sep=",")
 
 for (param in params)
