@@ -34,7 +34,7 @@ station_list <- CONFIG$pre$stat_list
 params <- CONFIG$pre$params
 lead_time_str <- CONFIG$verif$lead_time
 lead_time  <- eval(parse(text = lead_time_str))
-
+fcst_intervall <- CONFIG$verif$by_step
 
 print(station_list)
 statlist <- read.csv(file=station_list, sep=",")
@@ -50,7 +50,9 @@ for (param in params)
       lead_time = lead_time,
       file_path = grb_path,
       file_template = file_template,
-      file_format = "grb",
+      by = fcst_intervall,
+      file_format = "grib",
+      file_format_opts = grib_opts(param_find = list(T2m = use_grib_indicatorOfParameter(167))),
       transformation = "interpolate",
       transformation_opts = interpolate_opts(method="bilinear", clim_file = orog_file, stations = statlist), 
       output_file_opts =  sqlite_opts(path = fcst_path),

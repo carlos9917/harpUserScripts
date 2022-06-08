@@ -1,13 +1,13 @@
 #Section to define paths for the pre-processing
 # This section will be used by the scripts under pre_processing
 pre:
-  start_date: 2022050100
-  end_date: 2022053123
-  fclen: 48
+  start_date: 2022060100
+  end_date: 2022060200
+  fclen: 12
   vfld_path: "/scratch/ms/ie/duuw/vfld_vobs_sample/vfld"
   vobs_path: "/scratch/ms/dk/nhd/vfld_vobs_sample/vobs"
-  grb_path: "/scratch/kmw/HARP_WW/GRB_INPUT"
-  grb_template: "{YYYY}{MM}{DD}{HH}/ECMWF_DET_{YYYY}{MM}{DD}.grb"
+  grb_path: "/scratch/kmw/HARP_WW/GRB_INPUT/ECMWF"
+  grb_template: "{YYYY}{MM}{DD}{HH}/ECMWF_DET_{YYYY}{MM}{DD}+{LDT4}.grb"
   grb_orog: "/scratch/kmw/HARP_WW/GRB_INPUT/ECMWF/ECMWF_OROGRAPHY.grb"
   vfld_template:  #include one for each model if they are different. 
     - "vfld"
@@ -19,10 +19,10 @@ pre:
 #Section to define paths for the verification
 # This section will be used by the scripts under verification
 verif:
-  by_step: "12h"
+  by_step: "24h"
   fcst_model:
     - ECMWF_DET
-  lead_time: seq(0, 24, 1)
+  lead_time: seq(0, 12, 1)
   fcst_type: "det" #det or eps
   grps: "leadtime"
   fcst_path: "/scratch/ms/dk/nhd/FCTABLE"
