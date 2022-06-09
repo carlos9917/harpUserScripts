@@ -6,9 +6,9 @@ pre:
   fclen: 12
   vfld_path: "/scratch/ms/ie/duuw/vfld_vobs_sample/vfld"
   vobs_path: "/scratch/ms/dk/nhd/vfld_vobs_sample/vobs"
-  grb_path: "/scratch/kmw/HARP_WW/GRB_INPUT/ECMWF"
-  grb_template: "{YYYY}{MM}{DD}{HH}/ECMWF_DET_{YYYY}{MM}{DD}+{LDT4}.grb"
-  grb_orog: "/scratch/kmw/HARP_WW/GRB_INPUT/ECMWF/ECMWF_OROGRAPHY.grb"
+  grb_path: "/scratch/kmw/HARP_WW/GRB_INPUT/ECMWF"   # Directory where grib files are stored
+  grb_template: "{YYYY}{MM}{DD}{HH}/nomem_ECMWF_DET_{YYYY}{MM}{DD}+{LDT4}.grb"   # grib-file namings
+  grb_orog: "/scratch/kmw/HARP_WW/GRB_INPUT/ECMWF/ECMWF_OROGRAPHY.grb"     # file that contains orography
   vfld_template:  #include one for each model if they are different. 
     - "vfld"
   stat_list: "/home/kmw/harp_ww/harpUserScripts/R/include/statlist.csv"
@@ -25,7 +25,7 @@ verif:
   lead_time: seq(0, 12, 1)
   fcst_type: "det" #det or eps
   grps: "leadtime"
-  fcst_path: "/scratch/ms/dk/nhd/FCTABLE"
+  fcst_path: "/scratch/kmw/HARP_WW/FCTABLE"
   obs_path: "/scratch/ms/dk/nhd/OBSTABLE"
   verif_path: "/scratch/ms/dk/nhd/verif_results"
 #Section to define the paths for the output
