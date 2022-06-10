@@ -36,12 +36,14 @@ lead_time_str <- CONFIG$verif$lead_time
 lead_time  <- eval(parse(text = lead_time_str))
 fcst_intervall <- CONFIG$verif$by_step
 
-print(station_list)
 statlist <- read.csv(file=station_list, sep=",")
+
+source(here("/home/kmw/harp_ww_env/harpUserScripts/R/include/set_grb_ecmwf.R"))
 
 for (param in params)
 {
     cat("Processing ",param,"\n")
+
     read_forecast(
       start_date    = start_date,
       end_date      = end_date,
@@ -52,8 +54,7 @@ for (param in params)
       file_template = file_template,
       by = fcst_intervall,
       file_format = "grib",
-#      file_format_opts = grib_opts(param_find = list(T2m = use_grib_indicatorOfParameter(167))),
-      file_format_opts = grib_opts(level_find = list(T2m = use_grib_typeOfLevel("surface", 0))),
+      file_format_opts = ecmwf[[param]],
       transformation = "interpolate",
       transformation_opts = interpolate_opts(method="bilinear", clim_file = orog_file, stations = statlist), 
       output_file_opts =  sqlite_opts(path = fcst_path),

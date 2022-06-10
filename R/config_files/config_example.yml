@@ -11,7 +11,7 @@ pre:
   grb_orog: "/scratch/kmw/HARP_WW/GRB_INPUT/ECMWF/ECMWF_OROGRAPHY.grb"     # file that contains orography
   vfld_template:  #include one for each model if they are different. 
     - "vfld"
-  stat_list: "/home/kmw/harp_ww/harpUserScripts/R/include/statlist.csv"
+  stat_list: "/home/kmw/harp_ww_env/harpUserScripts/R/include/statlist.csv"
   params:
           #    - S10m
     - T2m
