@@ -3,47 +3,45 @@
 # Create the scorecards
 
 library(harp)
-library(here)
 library(argparse)
-library(yaml)
+library(here)
 
 
+###
+source(Sys.getenv('CONFIG_R'))
+#Function to do the whole calculation
+source(here("R","point_verif","fn_scorecard.R"))
+
+###
 parser <- ArgumentParser()
 
-
 parser$add_argument("-start_date", type="character",
-    default="None",# default="2021090700",
+    default=NULL,
     help="First date to process [default %(default)s]",
     metavar="Date in format YYYYMMDDHH")
 
 parser$add_argument("-end_date", type="character",
-    default="None",
+    default=NULL,
     help="Final date to process [default %(default)s]",
     metavar="Date in format YYYYMMDDHH")
-
-parser$add_argument("-config_file", type="character",
-    default="config_examples/config.yml",
-    help="Last date to process [default %(default)s]",
-    metavar="String")
 
 #NOTE: store_false sets this to TRUE if the argument is NOT called, otherwise to FALSE if it is called
 # Hence it is TRUE by default
 parser$add_argument("-save_rds", action="store_false",
                    help="Save rds file for verification or not [default %(default)s]")
 
-# source yml file using script in root dir
-source(here("set_params.R"))
-
-# The following variables are expected to change for each user / use case
-# Some defined in config file above, some command-line arguments
 args <- parser$parse_args()
-start_date <- args$start_date
-end_date   <- args$end_date
 
-#read config file
-config_file <- args$config_file
-cat("Using config file ",config_file)
-CONFIG <- yaml.load_file(here(config_file))
+
+###
+CONFIG <- conf_get_config()
+params <- CONFIG$params_details
+
+### 
+start_date <- ifelse(is.null(args$start_date),CONFIG$shared$start_date,args$start_date)
+end_date   <- ifelse(is.null(args$end_date),CONFIG$shared$end_date,args$end_date)
+
+
 
 fcst_model <- CONFIG$scorecards$fcst_model
 ref_model <- CONFIG$scorecards$ref_model
@@ -58,13 +56,12 @@ obs_path   <- CONFIG$verif$obs_path
 verif_path <- CONFIG$verif$verif_path
 grps       <- CONFIG$verif$grps
 plot_output <- CONFIG$post$plot_output
+
+## 
 date_path <- paste0(paste(start_date,end_date,sep="-"))
 dir.create(file.path(fcst_model,date_path),recursive=TRUE)
 pngfile <- paste(paste("scorecards",fcst_model,as.character(start_date),as.character(end_date),sep="_"),".png",sep="")
-
-#Create the output directory
-dir.create(file.path(plot_output),recursive=TRUE)
-savepath <- file.path(plot_output,pngfile)
+savepath <- file.path(plot_output,date_path,pngfile)
 
 pooled_by <- "SID"
 models_to_compare <- c(ref_model, fcst_model)
@@ -72,8 +69,7 @@ models_to_compare <- c(ref_model, fcst_model)
 #Select stations. Placeholder for the moment. If NULL it will not filter any
 selected_stations <- NULL #default
 
-#Function to do the whole calculation
-source("fn_scorecard.R")
+
 
 # Calculation starts here
 
@@ -100,7 +96,7 @@ scorecard_data <- lapply(
 
 #This one uses the new bootstrap_verify function
 scorecard_data <- bind_point_verif(scorecard_data)
-
+print(scorecard_data)
 #Save the verif data. Will this work here??? Only saving it for the whole domain
 #The naming of the output file is set automatically. Not changing it at this point
 #to avoid clashes with the shiny app

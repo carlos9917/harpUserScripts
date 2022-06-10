@@ -3,27 +3,34 @@
 library(harp)
 library(argparse)
 library(here)
-library(yaml)
+### 
+source(Sys.getenv('CONFIG_R'))
 
+
+###
 parser <- ArgumentParser()
 
+parser$add_argument("-start_date", type="character",
+    default=NULL, 
+    help="First date to process [default %(default)s]",
+    metavar="Date in format YYYYMMDDHH")
 
-parser$add_argument("-config_file", type="character",
-    default="config_examples/config.yml",
-    help="Last date to process [default %(default)s]",
-    metavar="String")
+parser$add_argument("-end_date", type="character",
+    default=NULL,
+    help="Final date to process [default %(default)s]",
+    metavar="Date in format YYYYMMDDHH")
 
-args <- parser$parse_args()
+args <- parser$parse_args()	
 
-# source yml file
-config_file <- args$config_file
-CONFIG <- yaml.load_file(here(config_file))
 
-# The following variables are expected to change for each user / use case
-# Some defined in config file above, some command-line arguments
+###
+CONFIG <- conf_get_config()
 
-start_date <- CONFIG$pre$start_date
-end_date <- CONFIG$pre$end_date
+ 
+
+### 
+start_date <- ifelse(is.null(args$start_date),CONFIG$shared$start_date,args$start_date)
+end_date   <- ifelse(is.null(args$end_date),CONFIG$shared$end_date,args$end_date)
 fclen <- CONFIG$pre$fclen
 vfld_path <- CONFIG$pre$vfld_path
 file_template <- CONFIG$pre$vfld_template

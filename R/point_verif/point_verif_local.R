@@ -6,7 +6,6 @@ library(harp)
 library(purrr)
 library(here)
 library(argparse)
-library(yaml)
 library(dplyr) # count, etc.
 library(stringr) # str_to_title
 library(forcats) # fcst_inorder
@@ -15,50 +14,38 @@ library(gridExtra) # For grid arrange
 library(grid) # For grid arrange
 library(pracma) # For logseq
 
-# sometimes it is useful to be able to use command-line-arguments.
-# Adding here the options most usually need to be changed
-# Values that usually remain unchanged are included in the config file
-# conf_det_scores.R
-
-parser <- ArgumentParser()
-
-parser$add_argument("-start_date", type="character",
-    default="None",
-    help="First date to process [default %(default)s]",
-    metavar="Date in format YYYYMMDDHH")
-
-parser$add_argument("-end_date", type="character",
-    default="None",
-    help="Final date to process [default %(default)s]",
-    metavar="Date in format YYYYMMDDHH")
-
-parser$add_argument("-config_file", type="character",
-    default="config_examples/config.yml",
-    help="Last date to process [default %(default)s]",
-    metavar="String")
-
-
-# Currently only setting the parameters here
-# set to local and source in plotting scripts
-# NB: Plotting scripts under development and to be used with caution
-source(here("set_params.R"))
+###
+source(Sys.getenv('CONFIG_R'))
 source(here("R/visualization/fn_plot_point_verif.R"))
 source(here("R/visualization/fn_plot_aux_scores.R"))
 source(here("R/visualization/fn_plot_helpers.R"))
 
-# The following variables are expected to change for each user / use case
-# Some defined in config file above, some command-line arguments
-args <- parser$parse_args()
-config_file <- args$config_file
-cat("Using config file ",config_file)
-CONFIG <- yaml.load_file(here(config_file))
-# The following variables are expected to change for each user / use case
-# Some defined in config file above, some command-line arguments
-args <- parser$parse_args()
 
-start_date <- args$start_date
-end_date   <- args$end_date
-by_step         <- CONFIG$verif$by_step  #Read from config file
+###
+parser <- ArgumentParser()
+
+parser$add_argument("-start_date", type="character",
+    default=NULL,
+    help="First date to process [default %(default)s]",
+    metavar="Date in format YYYYMMDDHH")
+
+parser$add_argument("-end_date", type="character",
+    default=NULL,
+    help="Final date to process [default %(default)s]",
+    metavar="Date in format YYYYMMDDHH")
+
+args <- parser$parse_args()	
+
+
+ 
+###
+CONFIG <- conf_get_config()
+params <- CONFIG$params_details
+
+###
+start_date <- ifelse(is.null(args$start_date),CONFIG$shared$start_date,args$start_date)
+end_date   <- ifelse(is.null(args$end_date),CONFIG$shared$end_date,args$end_date)
+by_step    <- CONFIG$verif$by_step  #Read from config file
 fcst_model <- CONFIG$verif$fcst_model
 lead_time_str <- CONFIG$verif$lead_time
 lead_time  <- eval(parse(text = lead_time_str))
@@ -69,8 +56,6 @@ obs_path   <- CONFIG$verif$obs_path
 verif_path <- CONFIG$verif$verif_path
 grps       <- CONFIG$verif$grps
 plot_output <- CONFIG$post$plot_output #  Load in png archive directory
-#Create the output directory
-dir.create(file.path(plot_output),recursive=TRUE)
 
 # Verif results by leadtime for each fcst_cycle (should be default choice?)
 grps <- list(c("leadtime","fcst_cycle"),"leadtime")
@@ -93,6 +78,7 @@ fn_verif_rename <- function(df){
   }
   return(df)
 }
+
 # Add lat/lon values to verif file for SIDs
 fn_sid_latlon <- function(df,fc){
   sid_toget <- df[[1]][["SID"]]; lat_sids <- NULL; lon_sids <- NULL; fc_tmp <- fc[[1]] 

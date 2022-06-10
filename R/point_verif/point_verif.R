@@ -8,48 +8,42 @@
 
 library(harp)
 library(purrr)
-library(here)
 library(argparse)
-library(yaml)
+library(here)
 
 # sometimes it is useful to be able to use command-line-arguments.
 # Adding here the options most usually need to be changed
 # Values that usually remain unchanged are included in the config file
 # conf_det_scores.R
 
+###
+source(Sys.getenv('CONFIG_R'))
+
+###
 parser <- ArgumentParser()
 
 parser$add_argument("-start_date", type="character",
-    default="None",
+    default=NULL,
     help="First date to process [default %(default)s]",
     metavar="Date in format YYYYMMDDHH")
 
 parser$add_argument("-end_date", type="character",
-    default="None",
+    default=NULL,
     help="Final date to process [default %(default)s]",
     metavar="Date in format YYYYMMDDHH")
 
-parser$add_argument("-config_file", type="character",
-    default="config_examples/config.yml",
-    help="Last date to process [default %(default)s]",
-    metavar="String")
+args <- parser$parse_args()	
+	
 
 
-# Currently only setting the parameters here
-source(here("set_params.R"))
+###
+CONFIG <- conf_get_config()
+params <- CONFIG$params_details
 
-# The following variables are expected to change for each user / use case
-# Some defined in config file above, some command-line arguments
-args <- parser$parse_args()
-config_file <- args$config_file
-cat("Using config file ",config_file)
-CONFIG <- yaml.load_file(here(config_file))
-# The following variables are expected to change for each user / use case
-# Some defined in config file above, some command-line arguments
-args <- parser$parse_args()
 
-start_date <- args$start_date
-end_date   <- args$end_date
+###
+start_date <- ifelse(is.null(args$start_date),CONFIG$shared$start_date,args$start_date)
+end_date   <- ifelse(is.null(args$end_date),CONFIG$shared$end_date,args$end_date)
 by_step         <- CONFIG$verif$by_step  #Read from config file
 fcst_model <- CONFIG$verif$fcst_model
 lead_time_str <- CONFIG$verif$lead_time

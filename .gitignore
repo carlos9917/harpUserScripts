@@ -6,5 +6,7 @@ harpUserScripts.Rproj
 .Rhistory
 .RData  
 .Rproj.user 
-.Rprofile  
-
+.Rprofile
+config.sh
+rstudio.log
+Rplots.pdf
