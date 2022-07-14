@@ -1,3 +1,4 @@
+## These scripts have been moved now to: [this location](https://github.com/harphub/accord-verif-scripts)
 # harpUserScripts
 Fork of [harpUserScripts](https://github.com/harphub/harpUserScripts) to use as draft repository
 for the ACCORD MQA harp scripts
